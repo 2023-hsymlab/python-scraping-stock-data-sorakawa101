@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+
 # DBに接続
 connection = pymysql.connect(host='localhost',
                              user='root',
@@ -27,6 +28,8 @@ def execute_query_on_tables(table, query):
                 select_record_from_table(cursor, table)
             elif query == 'u':
                 update_record_or_field_on_table(cursor, table)
+            elif query == 'd':
+                delete_record_on_table(cursor, table)
             else:
                 pass
 
@@ -129,6 +132,17 @@ def update_record_or_field_on_table(cursor, table):
     else:
         sql = f'UPDATE {table} SET email=%s, password=%s WHERE id={updated_id}'
         cursor.execute(sql, (new_email, new_password))
+
+
+# レコードの削除
+def delete_record_on_table(cursor, table):
+
+    # 削除したいレコードに対してidを指定する
+    id_data = int(input('deleted_id: '))
+
+    # データ削除
+    sql = f'DELETE FROM {table} WHERE id={id_data}'
+    cursor.execute(sql)
 
 
 # テーブルとクエリを選択
