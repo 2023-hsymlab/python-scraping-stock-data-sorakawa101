@@ -22,8 +22,8 @@ streamlit run front_sample.py
 
 
 # 企業コードを入力
-corp_code = st.text_input(
-    'Corp Code is: ',
+stock_code = st.text_input(
+    'Stock Code is: ',
     '9984.JP'
 )
 
@@ -50,7 +50,7 @@ st.write('End Date is: ', end)
 
 
 # データフレーム作成
-df = data.DataReader(corp_code, 'stooq', start, end)
+df = data.DataReader(stock_code, 'stooq', start, end)
 
 # 図の描画
 st.line_chart(df.loc[:, 'Volume'])
