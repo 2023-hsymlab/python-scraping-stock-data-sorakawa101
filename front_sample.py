@@ -12,6 +12,15 @@ from pandas_datareader import data
 st.title('Streamlit Sample')
 
 
+"""
+Run Command is:
+```
+streamlit run front_sample.py
+```
+\b
+"""
+
+
 # 企業コードを入力
 corp_code = st.text_input(
     'Corp Code is: ',
@@ -35,6 +44,9 @@ end = st.date_input(
     datetime.date.today()
 )
 st.write('End Date is: ', end)
+
+
+"\b"
 
 
 # データフレーム作成
