@@ -1,0 +1,138 @@
+import pymysql.cursors
+import os
+
+# .env ファイルをロードして環境変数へ反映
+from dotenv import load_dotenv
+load_dotenv()
+
+# DBに接続
+connection = pymysql.connect(host='localhost',
+                             user='root',
+                             password=os.getenv('MYSQL_PASSWORD'),
+                             database='db_sample',
+                             # cursorclassを指定することでSelect結果をtupleではなくdictionaryで受け取れる
+                             cursorclass=pymysql.cursors.DictCursor)
+
+
+def execute_query_on_tables(table, query):
+    with connection:
+        # 接続できたら
+        print('Connected!')
+
+        # Cursor Objectは実際にデータベースを管理するオブジェクト
+        with connection.cursor() as cursor:
+            if query == 'i':
+                insert_record_into_table(cursor, table)
+            elif query == 's':
+                select_record_from_table(cursor, table)
+            elif query == 'u':
+                update_record_or_field_on_table(cursor, table)
+            else:
+                pass
+
+        # デフォルトではAUTO_COMMIT=Falseになっているため、CommitしてSQLの実行を反映
+        connection.commit()
+
+
+# レコードの挿入（INSERT）
+def insert_record_into_table(cursor, table):
+
+    # 挿入したいレコードの入力
+    email_data = input('email: ')
+    password_data = input('password: ')
+
+    #  入力なしの場合は何もせずに終了
+    if email_data == '' and password_data == '':
+        pass
+
+    # クエリの指定（レコードを挿入）
+    sql = f'INSERT INTO {table}(email, password) VALUES (%s, %s)'
+    data = (email_data, password_data)
+
+    # SQLを実行
+    cursor.execute(sql, data)
+
+
+# レコードの取得（SELECT）
+def select_record_from_table(cursor, table):
+
+    # 取得方法の選択
+    way_of_select = input('Way of select: ')
+
+    # 取得方法による分岐
+    # 全件取得
+    if way_of_select == 'all':
+
+        # データ読み込み
+        sql = f'SELECT id, email, password FROM {table}'
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        print(result)
+
+    # １件検索or指定した１件取得
+    elif way_of_select == 'one':
+
+        selected_column = input('Where column? ')
+
+        # id指定による行検索
+        if selected_column == 'id':
+            id_data = int(input('id: '))
+            sql = f'SELECT email, password FROM {table} WHERE id={id_data}'
+            cursor.execute(sql)
+
+            # ? 下の記述法だとエラーが吐かれるのはなぜ？
+            # TypeError: %d format: a number is required, not str
+            # sql = f'SELECT email, password FROM {table} WHERE id=%d'
+            # cursor.execute(sql, id_data)
+
+        # email指定による行検索
+        elif selected_column == 'email':
+            email_data = input('email: ')
+            sql = f'SELECT id, password FROM {table} WHERE email=%s'
+            cursor.execute(sql, email_data)
+
+        # passwordによる行検索
+        elif selected_column == 'password':
+            password_data = input('password: ')
+            sql = f'SELECT id, email FROM {table} WHERE password=%s'
+            cursor.execute(sql, password_data)
+
+        # 列指定による行検索をしない場合はid=1の行を返す
+        else:
+            sql = f'SELECT email, password FROM {table} WHERE id=1'
+            cursor.execute(sql)
+
+        result = cursor.fetchone()
+        print(result)
+
+    else:
+        pass
+
+
+# レコード・フィールドの更新（UPDATE）
+def update_record_or_field_on_table(cursor, table):
+
+    # アップデートしたいレコードのidを入力
+    updated_id = int(input('updated_id: '))
+
+    # 更新内容を入力
+    new_email = input('new_email: ')
+    new_password = input('new_password: ')
+
+    # レコード・フィールドの更新
+    if new_email == '':
+        sql = f'UPDATE {table} SET password=%s WHERE id={updated_id}'
+        cursor.execute(sql, (new_password))
+    elif new_password == '':
+        sql = f'UPDATE {table} SET email=%s WHERE id={updated_id}'
+        cursor.execute(sql, (new_email))
+    else:
+        sql = f'UPDATE {table} SET email=%s, password=%s WHERE id={updated_id}'
+        cursor.execute(sql, (new_email, new_password))
+
+
+# テーブルとクエリを選択
+if __name__ == '__main__':
+    table = input('Which table?: ')
+    query = input('Which query?: ')
+    execute_query_on_tables(table, query)
