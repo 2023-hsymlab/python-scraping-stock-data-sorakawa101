@@ -8,6 +8,7 @@ import datetime
 
 from pandas_datareader import data
 
+import home
 import mod
 
 
@@ -32,6 +33,7 @@ st.header('Information')
 
 
 # DF：JPXから取得した銘柄コード一覧
+df_stock_code = home.df_stock_code_list
 # df_stock_code = pd.read_excel("./src/data_j.xls")
 
 

@@ -11,13 +11,10 @@ streamlit run home.py
 ```
 """
 
-
+# MySQLと接続
 # Initialize connection.
 conn = st.experimental_connection('mysql', type='sql')
 
+# DF：JPXから取得した銘柄コード一覧データをMySQLから取得
 # Perform query.
-df = conn.query('SELECT * from mytable;', ttl=600)
-
-# Print results.
-for row in df.itertuples():
-    st.write(f"{row.name} has a :{row.pet}:")
+df_stock_code_list = conn.query('SELECT * from stock_code_list;', ttl=600)
