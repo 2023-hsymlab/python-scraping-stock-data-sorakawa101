@@ -1,2 +1,2 @@
 .env
-./VirtualStockTradeSystem/secrets.toml
+/VirtualStockTradeSystem/secrets.toml
