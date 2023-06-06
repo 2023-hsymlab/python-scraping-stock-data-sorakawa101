@@ -32,13 +32,15 @@ st.header('Information')
 
 
 # DF：JPXから取得した銘柄コード一覧
-df_stock_code = pd.read_excel("./src/data_j.xls")
+# df_stock_code = pd.read_excel("./src/data_j.xls")
 
 
 # タブごとに表示分け
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
     ["Select", "Search", "Result(Graph)", "Result(Table)", "Result(Metric)"])
 
+# TODO tabじゃなくてgallery表示にして選択しつつグラフを見れるようにしたい
+# TODO グラフは複数日付を同時に見られるようにしたい（柳谷くんの参考に）
 # 情報を見たい銘柄コード・開始日・最終日を入力
 with tab1:
     # 銘柄コードを入力
@@ -93,7 +95,8 @@ with tab3:
     )
 
     # 図の描画
-    st.area_chart(df_stock_data.loc[:, options])
+    st.bar_chart(df_stock_data.loc[:, options])
+    st.line_chart(df_stock_data.loc[:, options])
 
 
 # 取得した株価データの表
