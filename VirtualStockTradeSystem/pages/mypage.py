@@ -15,7 +15,7 @@ df_stock_code = mod.ConnectMySQL_and_GetTable('stock_code_list')
 
 
 # 売買データをMySQLから取得
-# df_buying_and_selling = home.df_buying_and_selling_list
+
 
 # タブごとに表示分け
 tab1, tab2, tab3, tab4 = st.tabs(
@@ -48,10 +48,12 @@ with tab1:
             st.write(f'{corp_name}の株を{number_val}株{radio_val}った')
 
             # 入力情報をMySQLの売買データリストに送信
-            query = text(
-                f"INSERT INTO buying_and_selling_list VALUES (%s, %s, %d);")
-            data = ({corp_name}, {radio_val}, {number_val})
-            mod.ConnectMySQL_and_ExecuteQuery(query, data)
+            # ! 値が文字列の場合、値の外に''をつける必要がある
+            query = text(f"INSERT INTO buying_and_selling_list VALUES ('{corp_name}', '{radio_val}', {number_val});")
+            mod.ConnectMySQL_and_ExecuteData(query)
+
+
+
 
 with tab2:
     # 今下剤の売買データ
@@ -59,6 +61,17 @@ with tab2:
     today = str(today).split('-')
     st.write(f'{today[0]}年{today[1]}月{today[2]}日現在の売買データ')
 
-    df_buying_and_selling_list = mod.ConnectMySQL_and_GetTable(
-        'buying_and_selling_list')
+    # 売買データをMySQLから取得
+    # TODO runしなおさないと反映されないので要修正
+    df_buying_and_selling_list = mod.ConnectMySQL_and_GetTable('buying_and_selling_list')
     st.dataframe(df_buying_and_selling_list, use_container_width=True)
+
+    # TODO delete,update(企業,売買,株数量)をできるようにする（今はウィジェットの配置のみ）
+    option = st.selectbox('You can change here.', ('Delete', 'Update'))
+
+    index = st.number_input('Select index.')
+    if option == 'Delete':
+        st.button('Delete')
+    else:
+        title = st.text_input('Input updated info', '')
+        st.button('Update')
