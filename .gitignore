@@ -1,2 +1,3 @@
 .env
 /VirtualStockTradeSystem/.streamlit/secrets.toml
+/VirtualStockTradeSystem/pycache
