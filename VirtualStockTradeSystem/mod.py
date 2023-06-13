@@ -38,7 +38,7 @@ def ConnectMySQL_and_GetTable(table):
 
 
 # MySQLにクエリとデータを渡して、クエリを実行する関数
-def ConnectMySQL_and_ExecuteData(query):
+def ConnectMySQL_and_ExecuteQuery(query):
     # MySQLと接続
     # Initialize connection.
     connection = st.experimental_connection('mysql', type='sql')
