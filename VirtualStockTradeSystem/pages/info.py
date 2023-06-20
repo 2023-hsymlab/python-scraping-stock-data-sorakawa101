@@ -74,19 +74,8 @@ with tab3:
     # 選択中の企業名を表示
     st.subheader(f'Selected Corp is: {corp}')
 
-    # データの選択
-    options = st.multiselect(
-        'What are your interesting datas?',
-        ['Open', 'High', 'Low', 'Close', 'Volume'],
-        ['Volume']
-    )
-
-    # 図の描画
-    st.bar_chart(df_stock_data.loc[:, options])
-    st.line_chart(df_stock_data.loc[:, options])
-
     # figを定義
-    fig = make_subplots(rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.05, row_width=[0.2, 0.7], x_title="日付")
+    fig = make_subplots(rows=4, cols=1, shared_xaxes=True, vertical_spacing=0.05, row_width=[0.2, 0.2, 0.2, 0.7], x_title="日付")
 
 
     # ローソク足チャートを表示
@@ -101,6 +90,14 @@ with tab3:
     fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["SMA50"], name="SMA50", mode="lines"), row=1, col=1)
     fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["SMA200"], name="SMA200", mode="lines"), row=1, col=1)
 
+    # MACD
+    mod.Get_TechnicalIndex(df_stock_data)
+    fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["MACD"], mode="lines", showlegend=False), row=3, col=1)
+    fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["Signal"], mode="lines", showlegend=False), row=3, col=1)
+
+    # RSI
+    fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["RSI"], mode="lines", showlegend=False), row=4, col=1)
+
 
     # 出来高の棒グラフを表示
     fig.add_trace(
@@ -114,8 +111,7 @@ with tab3:
         #     "y":0.9,
         #     "x":0.5,
         # },
-        yaxis_title='株価',
-        xaxis_title="日付",
+        height=700
     )
 
     fig.update_xaxes(
@@ -129,6 +125,8 @@ with tab3:
     # ラベル名の設定とフォーマット変更（カンマ区切り）
     fig.update_yaxes(separatethousands=True, title_text="株価", row=1, col=1)
     fig.update_yaxes(title_text="出来高", row=2, col=1)
+    fig.update_yaxes(title_text="MACD", row=3, col=1)
+    fig.update_yaxes(title_text="RSI", row=4, col=1)
 
     # 棒グラフを非表示にする場合は以下を適用
     fig.update(layout_xaxis_rangeslider_visible=False)

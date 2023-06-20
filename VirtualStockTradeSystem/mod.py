@@ -67,9 +67,50 @@ def Get_Unnecessary_DateList(df):
     return d_breaks
 
 
+# 平均移動線を取得する関数
 def Get_SimpleMovingAverage(df):
     # SMAを計算
     df["SMA20"] = df["Close"].rolling(window=20).mean() 
     df["SMA50"] = df["Close"].rolling(window=50).mean()
     df["SMA200"] = df["Close"].rolling(window=200).mean()
     df.tail()
+
+
+# MACDを計算する関数
+def Calc_MACD(df):
+    FastEMA_period = 12  # 短期EMAの期間
+    SlowEMA_period = 26  # 長期EMAの期間
+    SignalSMA_period = 9  # SMAを取る期間
+    df["MACD"] = df["Close"].ewm(span=FastEMA_period).mean() - df["Close"].ewm(span=SlowEMA_period).mean()
+    df["Signal"] = df["MACD"].rolling(SignalSMA_period).mean()
+    return df
+
+
+# RSIを計算する関数
+def Calc_RSI(df):
+    # 前日との差分を計算
+    df_diff = df["Close"].diff(1)
+
+    # 計算用のDataFrameを定義
+    df_up, df_down = df_diff.copy(), df_diff.copy()
+
+    # df_upはマイナス値を0に変換
+    # df_downはプラス値を0に変換して正負反転
+    df_up[df_up < 0] = 0
+    df_down[df_down > 0] = 0
+    df_down = df_down * -1
+
+    # 期間14でそれぞれの平均を算出
+    df_up_sma14 = df_up.rolling(window=14, center=False).mean()
+    df_down_sma14 = df_down.rolling(window=14, center=False).mean()
+
+    # RSIを算出
+    df["RSI"] = 100.0 * (df_up_sma14 / (df_up_sma14 + df_down_sma14))
+
+    return df
+
+
+def Get_TechnicalIndex(df):
+    df = Calc_MACD(df)
+    df = Calc_RSI(df)
+    df.head()
