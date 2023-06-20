@@ -15,7 +15,7 @@ def StockCodeStr_to_CorpName(s):
     df_corp = df_stock_code[df_stock_code['コード']
                             == int(s.split('.JP')[0])]
 
-    # DFから銘柄名の絡むだけを抽出したseries（DFの最小単位）
+    # DFから銘柄名のカラムだけを抽出したseries（DFの最小単位）
     series_corp = df_corp['銘柄名']
 
     # seriesから企業名の値だけを抽出
@@ -31,7 +31,7 @@ def ConnectMySQL_and_GetTable(table):
     connection = st.experimental_connection('mysql', type='sql')
 
     df_stock_code_list = connection.query(
-        f'SELECT * from {table};', ttl=600)
+        f'SELECT * from {table};')
 
     return df_stock_code_list
 
@@ -46,3 +46,30 @@ def ConnectMySQL_and_ExecuteQuery(query):
     with connection.session as s:
         s.execute(query)
         s.commit()
+
+
+def Reset_ConnectionMySQL():
+    connection = st.experimental_connection('mysql', type='sql')
+    connection.reset()
+
+
+# 非表示にしたい日付（＝株式市場が閉場している日付）リストを取得する関数
+def Get_Unnecessary_DateList(df):
+    #日付一覧を取得
+    d_all = pd.date_range(start=df.index[0],end=df.index[-1])
+
+    #株価データの日付リストを取得
+    d_obs = [d.strftime("%Y-%m-%d") for d in df.index]
+
+    # 株価データの日付データに含まれていない日付を抽出
+    d_breaks = [d for d in d_all.strftime("%Y-%m-%d").tolist() if not d in d_obs]
+
+    return d_breaks
+
+
+def Get_SimpleMovingAverage(df):
+    # SMAを計算
+    df["SMA20"] = df["Close"].rolling(window=20).mean() 
+    df["SMA50"] = df["Close"].rolling(window=50).mean()
+    df["SMA200"] = df["Close"].rolling(window=200).mean()
+    df.tail()

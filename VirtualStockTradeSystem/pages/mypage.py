@@ -52,8 +52,13 @@ with tab1:
             query = text(f"INSERT INTO buying_and_selling_list2 (corp_name, buy_or_sell, stock_num) VALUES ('{corp_name}', '{radio_val}', {number_val});")
             mod.ConnectMySQL_and_ExecuteQuery(query)
 
+            # 売買データをMySQLから取得
+            # TODO runしなおさないと反映されないもしくは反映されるまでに時間がかかりすぎるので要修正
+            df_buying_and_selling_list = mod.ConnectMySQL_and_GetTable('buying_and_selling_list2')
+            st.table(df_buying_and_selling_list)
 
 
+            # mod.Reset_ConnectionMySQL()
 
 with tab2:
     # 今下剤の売買データ
