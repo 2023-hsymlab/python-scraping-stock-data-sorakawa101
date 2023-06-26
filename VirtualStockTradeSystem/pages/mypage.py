@@ -6,7 +6,6 @@ from sqlalchemy import text
 import mod
 
 
-st.title('Virtual Stock Trade System')
 st.header('MyPage')
 
 
