@@ -48,7 +48,8 @@ with st.sidebar:
     st.info(f'現在、\"{corp}\"\tの\t{start}〜{end}\tにおける株価データを表示中', icon=None)
 
     # DF：指定した銘柄の株式データ
-    df_stock_data = data.DataReader(stock_code, 'stooq', start, end)
+    # ! ここでiloc[::-1]でDFを逆順にしておくことでグラフ表示がうまくいく
+    df_stock_data = data.DataReader(stock_code, 'stooq', start, end).iloc[::-1]
 
 
 
@@ -107,7 +108,7 @@ with st.expander("前週・前月比"):
 # 出来高のエリアチャート
 
 # figを定義
-fig = make_subplots(rows=4, cols=1, shared_xaxes=True, vertical_spacing=0.05, row_width=[0.2, 0.2, 0.2, 0.7], x_title="日付")
+fig = make_subplots(rows=4, cols=1, shared_xaxes=True, vertical_spacing=0.05, row_width=[0.2, 0.2, 0.2, 0.7])
 
 
 # ローソク足チャートを表示
@@ -115,6 +116,16 @@ fig.add_trace(
     go.Candlestick(x=df_stock_data.index, open=df_stock_data["Open"], high=df_stock_data["High"], low=df_stock_data["Low"], close=df_stock_data["Close"], showlegend=False),
     row=1, col=1
 )
+mod.Get_Buy_or_Sell_Timing(df_stock_data)
+fig.add_trace(go.Scatter(x=df_stock_data.index,
+                        y=df_stock_data["engulfing_marker"],
+                        mode="markers+text",
+                        text=df_stock_data["engulfing_text"],
+                        textposition="top center",
+                        name="ENGULFING BAR",
+                        marker = { "size": 8, "color": "blue", "opacity": 0.6 },
+                        textfont = {"size": 8, "color": "black" }))
+
 
 # 移動平均線
 mod.Get_SimpleMovingAverage(df_stock_data)

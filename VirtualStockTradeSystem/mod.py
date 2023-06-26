@@ -3,6 +3,7 @@ from sqlalchemy import text
 import numpy as np
 import pandas as pd
 import datetime
+import talib as ta
 
 df_stock_code = pd.read_excel("./src/data_j.xls")
 
@@ -66,11 +67,18 @@ def Get_Unnecessary_DateList(df):
 
     return d_breaks
 
+# ローソク足チャート上で売買タイミングを取得する関数
+def Get_Buy_or_Sell_Timing(df):
+    engulfing = ta.CDLENGULFING(df["Open"], df["High"], df["Low"], df["Close"])
+    df["engulfing_text"] = engulfing.replace({ 100: "Sell", -100: "Buy", 0: "" })
+    df["engulfing_marker"] = (engulfing/100 * df["High"]).abs().replace({ 0: np.nan })
+    df.tail()
+
 
 # 平均移動線を取得する関数
 def Get_SimpleMovingAverage(df):
     # SMAを計算
-    df["SMA20"] = df["Close"].rolling(window=20).mean() 
+    df["SMA20"] = df["Close"].rolling(window=20).mean()
     df["SMA50"] = df["Close"].rolling(window=50).mean()
     df["SMA200"] = df["Close"].rolling(window=200).mean()
     df.tail()
