@@ -70,7 +70,7 @@ def Get_Unnecessary_DateList(df):
 # ローソク足チャート上で売買タイミングを取得する関数
 def Get_Buy_or_Sell_Timing(df):
     engulfing = ta.CDLENGULFING(df["Open"], df["High"], df["Low"], df["Close"])
-    df["engulfing_text"] = engulfing.replace({ 100: "Sell", -100: "Buy", 0: "" })
+    df["engulfing_text"] = engulfing.replace({ 100: "Buy", -100: "Sell", 0: "" })
     df["engulfing_marker"] = (engulfing/100 * df["High"]).abs().replace({ 0: np.nan })
     df.tail()
 
