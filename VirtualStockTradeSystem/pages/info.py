@@ -21,6 +21,37 @@ st.header('Information')
 df_stock_code = mod.ConnectMySQL_and_GetTable('stock_code_list')
 # df_stock_code = pd.read_excel("./src/data_j.xls")
 
+with st.sidebar:
+    # 銘柄コードを入力
+    stock_code = st.text_input(
+        'Stock Code is: ',
+        '9984.JP'
+    )
+
+    # データ取得の開始日
+    start = st.date_input(
+        'Start Date is: ',
+        # デフォルト値は約3ヶ月前の日付
+        datetime.date.today() - datetime.timedelta(weeks=12)
+    )
+    st.write('Start Date is: ', start)
+
+    # データ取得の最終日
+    end = st.date_input(
+        'End Date is: ',
+        # デフォルト値は今日の日付
+        datetime.date.today()
+    )
+    st.write('End Date is: ', end)
+
+    corp = mod.StockCodeStr_to_CorpName(stock_code)
+
+    # 現在洗濯中の情報を表示
+    st.info(f'現在、\"{corp}\"\tの\t{start}〜{end}\tにおける株価データを表示中', icon=None)
+
+    # DF：指定した銘柄の株式データ
+    df_stock_data = data.DataReader(stock_code, 'stooq', start, end)
+
 
 # タブごとに表示分け
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
@@ -144,10 +175,10 @@ with tab4:
 
 with tab5:
     # 選択中の企業名を表示
-    st.subheader(f'Selected Corp is: {corp}')
+    st.subheader(f'{corp}（{start}~{end}）')
 
     # 各データの前日比
-    st.write(f'前日比({end})')
+    st.write(f'前日比')
     col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("Open",     df_stock_data.iat[0, 0], int(
         df_stock_data.iat[0, 0]-df_stock_data.iat[1, 0]))
@@ -159,3 +190,33 @@ with tab5:
         df_stock_data.iat[0, 3]-df_stock_data.iat[1, 3]))
     col5.metric("Volume",   df_stock_data.iat[0, 4], int(
         df_stock_data.iat[0, 4]-df_stock_data.iat[1, 4]))
+
+
+    # 各データの前週比
+    st.write(f'前週比')
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Open",     df_stock_data.iat[0, 0], int(
+        df_stock_data.iat[0, 0]-df_stock_data.iat[5, 0]))
+    col2.metric("High",     df_stock_data.iat[0, 1], int(
+        df_stock_data.iat[0, 1]-df_stock_data.iat[5, 1]))
+    col3.metric("Low",      df_stock_data.iat[0, 2], int(
+        df_stock_data.iat[0, 2]-df_stock_data.iat[5, 2]))
+    col4.metric("Close",    df_stock_data.iat[0, 3], int(
+        df_stock_data.iat[0, 3]-df_stock_data.iat[5, 3]))
+    col5.metric("Volume",   df_stock_data.iat[0, 4], int(
+        df_stock_data.iat[0, 4]-df_stock_data.iat[5, 4]))
+
+
+# 各データの前月比
+    st.write(f'前月比')
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Open",     df_stock_data.iat[0, 0], int(
+        df_stock_data.iat[0, 0]-df_stock_data.iat[23, 0]))
+    col2.metric("High",     df_stock_data.iat[0, 1], int(
+        df_stock_data.iat[0, 1]-df_stock_data.iat[23, 1]))
+    col3.metric("Low",      df_stock_data.iat[0, 2], int(
+        df_stock_data.iat[0, 2]-df_stock_data.iat[23, 2]))
+    col4.metric("Close",    df_stock_data.iat[0, 3], int(
+        df_stock_data.iat[0, 3]-df_stock_data.iat[23, 3]))
+    col5.metric("Volume",   df_stock_data.iat[0, 4], int(
+        df_stock_data.iat[0, 4]-df_stock_data.iat[23, 4]))
