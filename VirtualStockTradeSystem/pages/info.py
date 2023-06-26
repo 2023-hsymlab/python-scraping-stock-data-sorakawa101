@@ -71,34 +71,35 @@ col5.metric("Volume",   df_stock_data.iat[0, 4], int(
     df_stock_data.iat[0, 4]-df_stock_data.iat[1, 4]))
 
 
-# 各データの前週比
-st.write(f'前週比')
-col1, col2, col3, col4, col5 = st.columns(5)
-col1.metric("Open",     df_stock_data.iat[0, 0], int(
-    df_stock_data.iat[0, 0]-df_stock_data.iat[5, 0]))
-col2.metric("High",     df_stock_data.iat[0, 1], int(
-    df_stock_data.iat[0, 1]-df_stock_data.iat[5, 1]))
-col3.metric("Low",      df_stock_data.iat[0, 2], int(
-    df_stock_data.iat[0, 2]-df_stock_data.iat[5, 2]))
-col4.metric("Close",    df_stock_data.iat[0, 3], int(
-    df_stock_data.iat[0, 3]-df_stock_data.iat[5, 3]))
-col5.metric("Volume",   df_stock_data.iat[0, 4], int(
-    df_stock_data.iat[0, 4]-df_stock_data.iat[5, 4]))
+with st.expander("前週・前月比"):
+    # 各データの前週比
+    st.write(f'前週比')
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Open",     df_stock_data.iat[0, 0], int(
+        df_stock_data.iat[0, 0]-df_stock_data.iat[5, 0]))
+    col2.metric("High",     df_stock_data.iat[0, 1], int(
+        df_stock_data.iat[0, 1]-df_stock_data.iat[5, 1]))
+    col3.metric("Low",      df_stock_data.iat[0, 2], int(
+        df_stock_data.iat[0, 2]-df_stock_data.iat[5, 2]))
+    col4.metric("Close",    df_stock_data.iat[0, 3], int(
+        df_stock_data.iat[0, 3]-df_stock_data.iat[5, 3]))
+    col5.metric("Volume",   df_stock_data.iat[0, 4], int(
+        df_stock_data.iat[0, 4]-df_stock_data.iat[5, 4]))
 
 
-# 各データの前月比
-st.write(f'前月比')
-col1, col2, col3, col4, col5 = st.columns(5)
-col1.metric("Open",     df_stock_data.iat[0, 0], int(
-    df_stock_data.iat[0, 0]-df_stock_data.iat[23, 0]))
-col2.metric("High",     df_stock_data.iat[0, 1], int(
-    df_stock_data.iat[0, 1]-df_stock_data.iat[23, 1]))
-col3.metric("Low",      df_stock_data.iat[0, 2], int(
-    df_stock_data.iat[0, 2]-df_stock_data.iat[23, 2]))
-col4.metric("Close",    df_stock_data.iat[0, 3], int(
-    df_stock_data.iat[0, 3]-df_stock_data.iat[23, 3]))
-col5.metric("Volume",   df_stock_data.iat[0, 4], int(
-    df_stock_data.iat[0, 4]-df_stock_data.iat[23, 4]))
+    # 各データの前月比
+    st.write(f'前月比')
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Open",     df_stock_data.iat[0, 0], int(
+        df_stock_data.iat[0, 0]-df_stock_data.iat[23, 0]))
+    col2.metric("High",     df_stock_data.iat[0, 1], int(
+        df_stock_data.iat[0, 1]-df_stock_data.iat[23, 1]))
+    col3.metric("Low",      df_stock_data.iat[0, 2], int(
+        df_stock_data.iat[0, 2]-df_stock_data.iat[23, 2]))
+    col4.metric("Close",    df_stock_data.iat[0, 3], int(
+        df_stock_data.iat[0, 3]-df_stock_data.iat[23, 3]))
+    col5.metric("Volume",   df_stock_data.iat[0, 4], int(
+        df_stock_data.iat[0, 4]-df_stock_data.iat[23, 4]))
 
 
 
