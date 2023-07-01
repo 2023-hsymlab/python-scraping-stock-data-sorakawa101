@@ -182,4 +182,5 @@ st.plotly_chart(fig, use_container_width=True)
 # 取得した株価データの表
 # 選択中の企業名を表示
 # 表の生成
-st.table(df_stock_data)
+with st.expander('表'):
+    st.table(df_stock_data.loc[:, :'Volume'])
