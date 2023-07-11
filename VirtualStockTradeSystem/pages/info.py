@@ -38,7 +38,7 @@ with st.sidebar:
     start = st.date_input(
         '開始日',
         # デフォルト値は約3ヶ月前の日付
-        datetime.date.today() - datetime.timedelta(weeks=12)
+        datetime.date.today() - datetime.timedelta(weeks=132)
     )
 
     # データ取得の最終日
@@ -198,7 +198,8 @@ if stock_code2:
         # 選択中の企業名を表示
         # 表の生成
         with st.expander('表'):
-            st.table(df_stock_data.loc[:, :'Volume'])
+            # st.table(df_stock_data.loc[:, :'Volume'])
+            st.dataframe(df_stock_data)
 
 
 

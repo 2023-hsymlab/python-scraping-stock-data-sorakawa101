@@ -78,9 +78,14 @@ def Get_Buy_or_Sell_Timing(df):
 # 平均移動線を取得する関数
 def Get_SimpleMovingAverage(df):
     # SMAを計算
-    df["SMA20"] = df["Close"].rolling(window=20).mean()
-    df["SMA50"] = df["Close"].rolling(window=50).mean()
-    df["SMA200"] = df["Close"].rolling(window=200).mean()
+    # df["SMA20"] = df["Close"].rolling(window=20).mean()
+    # df["SMA50"] = df["Close"].rolling(window=50).mean()
+    # df["SMA200"] = df["Close"].rolling(window=200).mean()
+
+    df["SMA20"] = ta.SMA(df["Close"], timeperiod=20)
+    df["SMA50"] = ta.SMA(df["Close"], timeperiod=50)
+    df["SMA200"] = ta.SMA(df["Close"], timeperiod=200)
+
     df.tail()
 
 
