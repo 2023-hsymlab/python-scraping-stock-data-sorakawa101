@@ -54,6 +54,15 @@ def Reset_ConnectionMySQL():
     connection.reset()
 
 
+# Dateカラムを生成する関数
+def Get_Date(df):
+    # df["Date"] = df.index
+    # df["Date"].str.split(" ").str.get(0)
+    # ! series.str.~ はシリーズをまとめて操作できるので便利．ただし，シリーズの中身がstrでないと使えない．変換方法はstr()は使えなかった
+    # ! df["Date"] = df.index.astype~ とまとめると最遠の日付一つが全てのシリーズに格納されてしまったので2行に分割
+    df["Date"] = df.index
+    df["Date"] = df["Date"].astype(str).str.split(pat=' ', expand=True)[0]
+
 # 非表示にしたい日付（＝株式市場が閉場している日付）リストを取得する関数
 def Get_Unnecessary_DateList(df):
     #日付一覧を取得
@@ -87,6 +96,25 @@ def Get_SimpleMovingAverage(df):
     df["SMA200"] = ta.SMA(df["Close"], timeperiod=200)
 
     df.tail()
+
+
+# パーフェクトオーダーを取得する関数
+def Get_PerfectOrder(df):
+    df["PerfectOrder"] = np.where((df["SMA20"]>df["SMA50"]) & (df["SMA50"] > df["SMA200"]), 1, 0)
+    df.tail()
+
+
+# パーフェクトオーダーの期間を取得する関数
+def Get_When_PerfectOrder(df):
+    df["PerfectOrder_diff"] = df["PerfectOrder"].diff()
+
+    # PerfectOrder_diffが１あるいは-1のデータのみを抽出してShiftでデータを1日ずらす --> これが終了日となる
+    df["end_date"] = df[df["PerfectOrder_diff"].isin([1, -1])]["Date"].shift(-1)
+
+    # PerfectOrder_diffが1となっている部分を抽出 --> パーフェクトオーダーが始まった日のデータだけを抽出
+    df_po = df[df["PerfectOrder_diff"]==1]
+
+    return df_po.head()[["Date", "end_date"]]
 
 
 # MACDを計算する関数

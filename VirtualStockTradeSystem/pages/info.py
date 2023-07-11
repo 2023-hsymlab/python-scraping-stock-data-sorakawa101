@@ -148,6 +148,14 @@ if stock_code2:
         fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["SMA50"], name="SMA50", mode="lines"), row=1, col=1)
         fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["SMA200"], name="SMA200", mode="lines"), row=1, col=1)
 
+        # mod.Get_Date(df_stock_data)
+        # mod.Get_PerfectOrder(df_stock_data)
+        # df_po = mod.Get_When_PerfectOrder(df_stock_data)
+        # for i in range(len(df_po)):
+        #     row = df_po.iloc[i]
+        #     fig.add_vrect(x0=row["Date"], x1=row["end_date"], line_width=0, fillcolor="blue", opacity=0.1, row=1, col=1)
+
+
         # MACD
         mod.Get_TechnicalIndex(df_stock_data)
         fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["MACD"], mode="lines", showlegend=False), row=3, col=1)
@@ -431,6 +439,14 @@ else:
     fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["SMA50"], name="SMA50", mode="lines"), row=1, col=1)
     fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["SMA200"], name="SMA200", mode="lines"), row=1, col=1)
 
+    mod.Get_Date(df_stock_data)
+    mod.Get_PerfectOrder(df_stock_data)
+    df_po = mod.Get_When_PerfectOrder(df_stock_data)
+    for i in range(len(df_po)):
+        row = df_po.iloc[i]
+        fig.add_vrect(x0=row["Date"], x1=row["end_date"], line_width=0, fillcolor="blue", opacity=0.1, row=1, col=1)
+
+
     # MACD
     mod.Get_TechnicalIndex(df_stock_data)
     fig.add_trace(go.Scatter(x=df_stock_data.index, y=df_stock_data["MACD"], mode="lines", showlegend=False), row=3, col=1)
@@ -481,4 +497,7 @@ else:
     # 選択中の企業名を表示
     # 表の生成
     with st.expander('表'):
-        st.table(df_stock_data.loc[:, :'Volume'])
+        # st.table(df_stock_data.loc[:, :'Volume'])
+        # mod.Get_Date(df_stock_data)
+        st.dataframe(df_stock_data)
+        st.dataframe(df_po)
