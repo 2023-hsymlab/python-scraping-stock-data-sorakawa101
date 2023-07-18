@@ -442,9 +442,10 @@ else:
     mod.Get_Date(df_stock_data)
     mod.Get_PerfectOrder(df_stock_data)
     df_po = mod.Get_When_PerfectOrder(df_stock_data)
-    for i in range(len(df_po)):
+    #! len(df_po)-1 にしないと，end_dateが空の行が含まれてしまうので，表示がおかしくなる
+    for i in range(len(df_po)-1):
         row = df_po.iloc[i]
-        fig.add_vrect(x0=row["Date"], x1=row["end_date"], line_width=0, fillcolor="blue", opacity=0.1, row=1, col=1)
+        fig.add_vrect(x0=row["Date"], x1=row["end_date"], annotation_text="PERFECT ORDER", annotation_position="top left", line_width=0, fillcolor="cyan", opacity=0.1, row=1, col=1)
 
 
     # MACD
@@ -497,7 +498,7 @@ else:
     # 選択中の企業名を表示
     # 表の生成
     with st.expander('表'):
-        # st.table(df_stock_data.loc[:, :'Volume'])
+        st.table(df_stock_data.loc[:, :'Volume'])
         # mod.Get_Date(df_stock_data)
-        st.dataframe(df_stock_data)
-        st.dataframe(df_po)
+        # st.dataframe(df_stock_data)
+
