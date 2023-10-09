@@ -10,13 +10,14 @@ def get_stock_code_list_from_excel():
     url = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls"
     r = requests.get(url)
 
-    with open('data_j.xls', 'wb') as output:
+    with open("data_j.xls", "wb") as output:
         output.write(r.content)
 
     stocklist = pd.read_excel("./data_j.xls")
-    stocklist.loc[stocklist["市場・商品区分"] == "市場第一部（内国株）",
-                  ["コード", "銘柄名", "33業種コード", "33業種区分", "規模コード", "規模区分"]
-                  ]
+    stocklist.loc[
+        stocklist["市場・商品区分"] == "市場第一部（内国株）",
+        ["コード", "銘柄名", "33業種コード", "33業種区分", "規模コード", "規模区分"],
+    ]
     return stocklist
 
 
@@ -25,12 +26,14 @@ def input_df_to_mysql(table_name):
     load_dotenv()
 
     # MySQLの接続情報
-    user = os.getenv('MYSQL_USER')
-    host = os.getenv('MYSQL_HOST')
-    password = os.getenv('MYSQL_PASSWORD')
-    database = 'scraping_stock_data'
+    user = os.getenv("MYSQL_USER")
+    host = os.getenv("MYSQL_HOST")
+    port = os.getenv("MYSQL_PORT")
+    password = os.getenv("MYSQL_PASSWORD")
+    database = os.getenv("MYSQL_DB")
 
-    url = f'mysql+pymysql://{user}:{password}@{host}/{database}'
+    #  mysql+pymysql://<username>:<password>@<host>:<port>/<database>?charset=<charset_type>
+    url = f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
 
     # MySQLに接続するためのエンジン
     # 記述テンプレ: engine = create_engine('mysql://<user>:<password>@<host>/<database>?charset=utf8')
@@ -45,5 +48,5 @@ def input_df_to_mysql(table_name):
 
 
 # 格納したいテーブルを指定
-table_name = 'stock_code_list'
+table_name = "stock_code_list"
 input_df_to_mysql(table_name)
